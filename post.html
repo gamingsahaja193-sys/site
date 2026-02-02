@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Post Your Voice</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="hero">
+    <h1>POST YOUR VOICE</h1>
+    <p class="hero-tagline">
+      Your identity is protected. Speak freely and responsibly.
+    </p>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- REASSURANCE MESSAGE -->
+    <section class="statement-box">
+      <h2>Before You Write</h2>
+      <p>
+        You may submit your statement anonymously or under a chosen pseudonym.
+        No personal identity is required or displayed publicly. Your safety and
+        privacy come first.
+      </p>
+    </section>
+
+    <!-- FORM -->
+    <section class="statement-box">
+      <h2>Your Statement</h2>
+
+      <form id="statementForm">
+
+        <!-- NICKNAME -->
+        <label>
+          Nickname (optional)
+          <input type="text" id="nickname" placeholder="Leave blank to remain anonymous">
+        </label>
+
+        <!-- RACE -->
+        <label>
+          Race (optional)
+          <select id="race">
+            <option value="">Prefer not to say</option>
+            <option>Malay</option>
+            <option>Chinese</option>
+            <option>Indian</option>
+            <option>Sabahan</option>
+            <option>Sarawakian</option>
+            <option>Others</option>
+          </select>
+        </label>
+
+        <!-- STATEMENT -->
+        <label>
+          Statement
+          <textarea
+            id="statement"
+            placeholder="Write your thoughts here. This space is intentionally large."
+            required></textarea>
+        </label>
+
+        <!-- AGREEMENT -->
+        <label class="checkbox">
+          <input type="checkbox" required>
+          I take full responsibility for my submission. I will not post personal data or unlawful content.
+        </label>
+
+        <!-- SUBMIT -->
+        <button type="submit" class="btn primary">
+          Submit Statement
+        </button>
+
+      </form>
+    </section>
+
+    <!-- BACK -->
+    <div class="action-area">
+      <a href="index.html" class="btn secondary">← Back to Home</a>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      No login required. No personal identification collected.
+      All submissions are the responsibility of the author.
+    </p>
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    const form = document.getElementById("statementForm");
+
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+
+      const nickname = document.getElementById("nickname").value || "Anonymous";
+      const race = document.getElementById("race").value || "Not specified";
+      const statement = document.getElementById("statement").value;
+
+      const newPost = {
+        nickname,
+        race,
+        statement,
+        date: new Date().toLocaleString()
+      };
+
+      let posts = JSON.parse(localStorage.getItem("statements")) || [];
+      posts.unshift(newPost); // latest first
+      localStorage.setItem("statements", JSON.stringify(posts));
+
+      // redirect to read page
+      window.location.href = "read.html";
+    });
+  </script>
+
+</body>
+</html>

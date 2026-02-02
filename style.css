@@ -1,0 +1,229 @@
+/* =====================
+   RESET & VARIABLES
+===================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-main: #0a0d12;
+  --bg-card: #131825;
+  --bg-input: #0f1422;
+
+  --text-main: #e8ebf1;
+  --text-muted: #9aa3b2;
+
+  --accent: #5aa9ff;
+  --accent-soft: rgba(90,169,255,0.25);
+
+  --border-soft: rgba(255,255,255,0.08);
+}
+
+/* =====================
+   BODY
+===================== */
+body {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  background: radial-gradient(circle at top, #141b33, #0a0d12 70%);
+  color: var(--text-main);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+}
+
+/* =====================
+   HERO HEADER
+===================== */
+.hero {
+  padding: 90px 20px 60px;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  letter-spacing: 4px;
+  font-weight: 700;
+}
+
+.hero-tagline {
+  margin-top: 16px;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+/* =====================
+   MAIN
+===================== */
+main {
+  flex: 1;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* =====================
+   CONTENT BOX
+===================== */
+.statement-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.55);
+}
+
+.statement-box h2 {
+  font-size: 1.3rem;
+  margin-bottom: 14px;
+}
+
+.statement-box p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* =====================
+   FORM
+===================== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* =====================
+   INPUTS
+===================== */
+input,
+select,
+textarea {
+  background: var(--bg-input);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  padding: 14px 16px;
+  color: var(--text-main);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6f7787;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* =====================
+   TEXTAREA (IMPORTANT)
+===================== */
+textarea {
+  min-height: 260px;   /* BESAR & SELSESA */
+  resize: vertical;
+  line-height: 1.7;
+}
+
+/* =====================
+   CHECKBOX
+===================== */
+.checkbox {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.checkbox input {
+  margin-top: 4px;
+}
+
+/* =====================
+   BUTTONS
+===================== */
+.btn {
+  padding: 16px 38px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn.primary {
+  background: linear-gradient(135deg, #5aa9ff, #3c7cff);
+  color: #fff;
+  border: none;
+  box-shadow: 0 12px 32px rgba(90,169,255,0.35);
+}
+
+.btn.secondary {
+  background: transparent;
+  border: 1px solid var(--border-soft);
+  color: var(--text-main);
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  opacity: 0.96;
+}
+
+/* =====================
+   ACTION AREA
+===================== */
+.action-area {
+  margin: 50px 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* =====================
+   FOOTER
+===================== */
+footer {
+  border-top: 1px solid var(--border-soft);
+  padding: 26px 20px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* =====================
+   RESPONSIVE
+===================== */
+@media (max-width: 600px) {
+  .hero h1 {
+    font-size: 2.1rem;
+  }
+
+  .statement-box {
+    padding: 22px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+}

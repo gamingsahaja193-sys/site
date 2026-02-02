@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Read Statements</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Extra styling untuk share buttons */
+    .share-buttons {
+      margin-top: 12px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .share-buttons button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .share-buttons button:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+
+    /* Toast notification */
+    #toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+
+    /* Load more button */
+    #loadMoreBtn {
+      display: block;
+      margin: 20px auto 50px;
+      padding: 12px 30px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    #loadMoreBtn:hover {
+      opacity: 0.85;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="hero">
+    <h1>PUBLIC STATEMENTS</h1>
+    <p class="hero-tagline">
+      Voices shared anonymously and responsibly.
+    </p>
+  </header>
+
+  <main id="statementList">
+    <!-- Articles akan muncul di sini -->
+  </main>
+
+  <button id="loadMoreBtn">Load More</button>
+
+  <div class="action-area">
+    <a href="post.html" class="btn primary">Post New Statement</a>
+    <a href="index.html" class="btn secondary">Back to Home</a>
+  </div>
+
+  <footer>
+    <p>All statements are shown as submitted by their authors.</p>
+  </footer>
+
+  <!-- Toast -->
+  <div id="toast">Copied!</div>
+
+  <script>
+    const list = document.getElementById("statementList");
+    const toast = document.getElementById("toast");
+    const loadMoreBtn = document.getElementById("loadMoreBtn");
+
+    // ===== FUNCTION: Escape HTML untuk XSS protection =====
+    function escapeHTML(str) {
+      return str.replace(/[&<>"']/g, function(m) {
+        return {
+          '&':'&amp;',
+          '<':'&lt;',
+          '>':'&gt;',
+          '"':'&quot;',
+          "'":'&#39;'
+        }[m];
+      });
+    }
+
+    // Ambil semua statement dari localStorage
+    const posts = JSON.parse(localStorage.getItem("statements")) || [];
+
+    let visibleCount = 0;   // count statement yang sedang visible
+    const batchSize = 5;    // load 5 statement sekali
+
+    function renderPosts(batch = batchSize){
+      const nextCount = visibleCount + batch;
+      const postsToRender = posts.slice(visibleCount, nextCount);
+
+      if(postsToRender.length === 0 && visibleCount === 0){
+        list.innerHTML = `
+          <div class="statement-box">
+            <p>No statements yet. Be the first to post!</p>
+          </div>
+        `;
+        loadMoreBtn.style.display = 'none';
+        return;
+      }
+
+      postsToRender.forEach((post, index) => {
+        const box = document.createElement("section");
+        box.className = "statement-box";
+
+        const safeNickname = escapeHTML(post.nickname);
+        const safeRace = escapeHTML(post.race);
+        const safeStatement = escapeHTML(post.statement);
+
+        box.innerHTML = `
+          <h2>${safeNickname}</h2>
+          <p style="font-size:0.8rem; color:#9aa3b2;">
+            ${safeRace} • ${post.date}
+          </p>
+          <p style="margin-top:12px; white-space:pre-line;">
+            ${safeStatement}
+          </p>
+
+          <div class="share-buttons">
+            <button onclick="shareWhatsApp(${visibleCount})">WhatsApp</button>
+            <button onclick="shareTwitter(${visibleCount})">Twitter</button>
+            <button onclick="shareFacebook(${visibleCount})">Facebook</button>
+            <button onclick="copyText(${visibleCount})">Copy Text</button>
+          </div>
+        `;
+
+        list.appendChild(box);
+        visibleCount++;
+      });
+
+      // Hide load more button kalau dah habis semua posts
+      if(visibleCount >= posts.length){
+        loadMoreBtn.style.display = 'none';
+      }
+    }
+
+    // Load initial posts
+    renderPosts();
+
+    // Load more button
+    loadMoreBtn.addEventListener('click', () => {
+      renderPosts();
+    });
+
+    // ===== SHARE FUNCTIONS =====
+    function getPostText(index){
+      const post = posts[index];
+      return `${post.nickname} (${post.race})\n\n${post.statement}`;
+    }
+
+    function shareWhatsApp(index){
+      const text = encodeURIComponent(getPostText(index));
+      window.open(`https://wa.me/?text=${text}`, '_blank');
+    }
+
+    function shareTwitter(index){
+      const text = encodeURIComponent(getPostText(index));
+      window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank');
+    }
+
+    function shareFacebook(index){
+      const text = encodeURIComponent(getPostText(index));
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=&quote=${text}`, '_blank');
+    }
+
+    // ===== COPY WITH TOAST =====
+    function copyText(index){
+      const text = getPostText(index);
+      navigator.clipboard.writeText(text).then(() => {
+        showToast("Statement copied to clipboard!");
+      });
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.style.opacity = 1;
+      setTimeout(() => {
+        toast.style.opacity = 0;
+      }, 1800);
+    }
+
+  </script>
+
+</body>
+</html>
